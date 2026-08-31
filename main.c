@@ -67,19 +67,13 @@ Tuple split_number(int input) {
 }
 
 int split_multiply(int x, int y) {
-  // Base case: numbers are single digit
-  int newX, newY = 0;
-  if (x / 10.0 > 1) {
-    // Don't do anything to x
-    newX = x;
+  if (num_digits(x) > 1) {
+    split_multiply(x);
   }
-  else {
-    int i = 0;
+  if (num_digits(y) > 1) {
+    split_multiply(y);
   }
-  if (y / 10.0 > 1) {
-    newY = y;
-  }
-  return 0;
+  
 }
 
 
