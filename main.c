@@ -63,7 +63,7 @@ Tuple split_number(int input) {
     tmp /= 10;
 
     // Multiply by 10 based on digit position
-    for (int j = 0; j < i; i++) {
+    for (int j = 0; j < i; j++) {
       addToTail = multiply_by_ten(addToTail);
     }
 
