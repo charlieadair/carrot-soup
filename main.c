@@ -14,10 +14,10 @@ int multiply_by_ten(int input) {
 
 // Find how many digits in input
 int num_digits(int input) {
-  int numDigits = 1; // Assume digit is at least 1
-  int tmp = input % 10;
+  int numDigits = 0;
+  int tmp = input;
   while (tmp / 10 > 1) {
-    tmp = tmp % 10;
+    tmp = tmp / 10;
     numDigits++;
   }
   return numDigits;
@@ -34,6 +34,9 @@ Tuple split_number(int input) {
 
   int numDigits = num_digits(input);
 
+  //DEBUG
+  printf("numDigits: %d\n", numDigits);
+
   Tuple output;
   output.head = 0;
   output.tail = 0;
@@ -46,6 +49,8 @@ Tuple split_number(int input) {
   int tmp = input;
   // pop the last n/2 digits
   // by dividing by 10
+  //
+  printf("numDigits / 2: %d\n", numDigits / 2);
   for (int i = 0; i < (numDigits / 2); i++) {
     
     int addToTail = tmp % 10;
@@ -83,7 +88,8 @@ int split_multiply(int x, int y) {
 
 int main(void) {
   int input = 1234;
+  printf("Input: [%d]\n", input);
   Tuple output = split_number(input);
-  printf("%d, %d", output.head, output.tail);
+  printf("Output: [%d, %d]\n", output.head, output.tail);
   return 0;
 }
