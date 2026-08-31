@@ -4,13 +4,6 @@
 
 #include <stdio.h>
 
-
-int main(void) {
-  printf("hello world2!\n");
-
-  return 0;
-}
-
 int multiply_by_ten(int input) {
   int output;
   output = (input << 3); // Multiply input by eight
@@ -87,3 +80,10 @@ int split_multiply(int x, int y) {
   return 0;
 }
 
+
+int main(void) {
+  int input = 1234;
+  Tuple output = split_number(input);
+  printf("%d, %d", output.head, output.tail);
+  return 0;
+}
