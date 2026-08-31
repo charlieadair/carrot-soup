@@ -22,9 +22,6 @@ int num_digits(int input) {
     tmp = tmp / 10;
     numDigits++;
 
-    //DEBUG
-    printf("Temp / 10: %d\nnumDigits: %d\n", tmp, numDigits);
-
   }
   return numDigits;
 }
@@ -39,10 +36,7 @@ typedef struct {
 Tuple split_number(int input) {
 
   int numDigits = num_digits(input);
-
-  //DEBUG
-  printf("numDigits: %d\n", numDigits);
-
+  
   Tuple output;
   output.head = 0;
   output.tail = 0;
@@ -52,13 +46,10 @@ Tuple split_number(int input) {
     return output;
   }
 
-  int tmp = input;
   // pop the last n/2 digits
   // by dividing by 10
-
-
+  int tmp = input;
   for (int i = 0; i < (numDigits / 2); i++) {
-    
     int addToTail = tmp % 10;
     tmp /= 10;
 
@@ -93,7 +84,7 @@ int split_multiply(int x, int y) {
 
 
 int main(void) {
-  int input = 1234;
+  int input = 123456;
   printf("Input: [%d]\n", input);
   Tuple output = split_number(input);
   printf("Output: [%d, %d]\n", output.head, output.tail);
