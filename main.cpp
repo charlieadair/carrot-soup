@@ -1,75 +1,74 @@
-// This needs to be an implementation of the Split-Multiply algorithm
-// Constraints: 1≤𝑛≤20000; n is also guaranteed to be a power of 2
-//    x and y are both positive numbers of the same length.
-
-#include <stdio.h>
+// New startegy — Use vectors to represent the number instead of integers
+#include <vector>
+#include <string>
 #include <iostream>
-#include <cstdint>
+#include <cstdio>
 
-uint64_t multiply_by_ten(uint64_t input) {
-  uint64_t output;
-  output = (input << 3); // Multiply input by eight
-  output += (input << 1); // Add input times 2
-
-  return output;
-}
-
-// Find how many digits in input
-uint64_t num_digits(uint64_t input) {
-  if (input == 0) {
-    return 0;
-  }
-
-  uint64_t numDigits = 1;
-  uint64_t tmp = input;
-
-  while (tmp >= 10) {
+// Turns a string (expected to represent a number) into a vector of integers
+std::vector<int> vectorize(std::string input, int numDigits) {
+  std::vector<int> result;
     
-    tmp = tmp / 10;
-    numDigits++;
-
+  int pad = numDigits - input.length();
+  for (int i = 0; i < pad; ++i) {
+    result.push_back(0);
   }
-  return numDigits;
+   
+  for (char c : input) {
+    result.push_back(c - '0');
+  }
+    
+  return result;
+}
+// Takes two vector<int> and adds their values toegether resulting in a new vector
+std::vector<int> add_vectors(std::vector<int> a, std::vector<int> b) {
+  std::vector<int> result;
+    int carry = 0;
+    int i = a.size() - 1;
+    int j = b.size() - 1;
+    
+    // Iterate from the least significant digit (right) to most significant (left)
+  while (i >= 0 || j >= 0 || carry > 0) {
+    int sum = carry;
+    if (i >= 0) sum += a[i--];
+    if (j >= 0) sum += b[j--];
+        
+    result.push_back(sum % 10);
+    carry = sum / 10;
+  }
+     
+  std::reverse(result.begin(), result.end());
+  return result;
 }
 
-typedef struct {
-  uint64_t head;
-  uint64_t tail;
-} Tuple;
+// Converts a vector of ints to a string
+std::string vector_to_string(std::vector<int> in) {
+  std::string result;
 
-// Given a number, split it into its
-// front n/2 digits and back n/2 digits
-Tuple split_number(uint64_t input) {
+  for (int digit : in) {
+      result += static_cast<char>(digit + '0');
+  }
+    
+  return result;
+}
 
-  uint64_t numDigits = num_digits(input);
+// Multiplies a number (expressed as a vector) by a power of 10
+std::vector<int> mult_power_of_ten(std::vector<int> in, int power) {
+  if (power == 0) {
+    return in;
+  }
   
-  Tuple output;
-  output.head = 0;
-  output.tail = 0;
+  std::vector<int> result;
+  int pad = in.size() + power;
 
-  if (numDigits == 1) {
-    output.tail = input;
-    return output;
+  for (int i = 0; i < pad; ++i) {
+    result.push_back(0);
   }
 
-  // pop the last n/2 digits
-  // by dividing by 10
-  uint64_t tmp = input;
-  for (uint64_t i = 0; i < (numDigits / 2); i++) {
-    uint64_t addToTail = tmp % 10;
-    tmp /= 10;
-
-    // Multiply by 10 based on digit position
-    for (uint64_t j = 0; j < i; j++) {
-      addToTail = multiply_by_ten(addToTail);
-    }
-
-    output.tail += addToTail;
+  for (int i = 0; i < in.size(); i++) {
+    result[i] = in[i];
   }
 
-  output.head = tmp;
-
-  return output;
+  return result;
 }
 
 // x * y = ac * 10^{2m} + (ad + bc) * 10^m + bd
@@ -78,66 +77,66 @@ Tuple split_number(uint64_t input) {
 //        where: e = ac ; f = bd ; g = bc ; h = ad
 //
 //       = term1 + term2 + f
-uint64_t split_multiply(uint64_t x, uint64_t y, uint64_t numDigits) {
+std::vector<int> split_multiply(std::vector<int>  x, std::vector<int> y, int numDigits) {
   // Base case — multiply 2 single digit numbers
   // Note: We are guaranteed that numDigits is a power of 2
   //       so we should never be in a situation where 0 + 2 = 2
   //       causes logic to break. In otherwords, x = y.
-  if (numDigits <= 1) {
-    return x * y;
-  }
+  
+if (numDigits <= 1) {
+    std::vector<int> output;
+    int out_int = x[0] * y[0];
 
-  Tuple left, right;
-  left = split_number(x);
-  right = split_number(y);
+    if (out_int >= 10) {
+      output.push_back(out_int / 10); 
+    }
 
-  uint64_t a, b, c, d;
-  a = left.head;
-  b = left.tail;
-  c = right.head;
-  d = right.tail;
+    output.push_back(out_int % 10);     
 
-  uint64_t halfDigits = numDigits >> 1;
-
-  uint64_t e = split_multiply(a, c, halfDigits);
-  uint64_t f = split_multiply(a, d, halfDigits);
-  uint64_t g = split_multiply(b, c, halfDigits);
-  uint64_t h = split_multiply(b, d, halfDigits);
-
-  uint64_t m =  halfDigits;
-  uint64_t twoM = ( m << 1 );
-
-  uint64_t term1 = e;
-  for (uint64_t i = 0; i < twoM; i++) {
-    term1 = multiply_by_ten(term1);
-  }
-
-  uint64_t term2 = g + f;
-  for (uint64_t i = 0; i < m; i++){
-    term2 = multiply_by_ten(term2);
-  }
-
-  return term1 + term2 + h;
-
+    return output;
 }
 
-// x and y must have the same digit length for split_multiply's
-// constraints to hold, so we pass num_digits(x) as the length.
-void run_test(uint64_t x, uint64_t y) {
-  uint64_t actual = split_multiply(x, y, num_digits(x));
-  printf("%llu\n", actual);
+int m = numDigits >> 1; // Effectively numDigits / 2
+
+std::vector<int> a(x.begin(), x.begin() + m);
+std::vector<int> c(y.begin(), y.begin() + m);
+std::vector<int> b(x.begin() + m, x.end());
+std::vector<int> d(y.begin() + m, y.end());
+  
+std::vector<int> e = split_multiply(a, c, m);
+std::vector<int> f = split_multiply(a, d, m);
+std::vector<int> g = split_multiply(b, c, m);
+std::vector<int> h = split_multiply(b, d, m);
+
+std::vector<int> term1 = mult_power_of_ten(e, numDigits);
+  
+std::vector<int> term2 = mult_power_of_ten(add_vectors(g, f), m);
+
+std::vector<int> result = add_vectors(add_vectors(term1, term2), h);
+return result;
+
 }
 
 int main(void) {
-
-  uint64_t x, y, numDigits;
-
+  int numDigits;
+  std::string in_x, in_y;
+  
+  // Get input
   std::cin >> numDigits;
-  std::cin >> x;
-  std::cin >> y;
+  std::cin.ignore();
+  std::getline(std::cin, in_x);
+  std::getline(std::cin, in_y);
 
+  std::vector<int> X = vectorize(in_x, numDigits);
+  std::vector<int> Y = vectorize(in_y, numDigits);
+ 
+  std::string result = vector_to_string(split_multiply(X, Y, numDigits));
 
-  run_test(x, y);
+  printf("%s\n", result.c_str());
+
+  // Debug
+  // printf("Digits: %d, X: %s, Y: %s\n", numDigits, x.c_str(), y.c_str());
 
   return 0;
 }
+
