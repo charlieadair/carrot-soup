@@ -71,8 +71,11 @@ Tuple split_number(int input) {
 }
 
 // x * y = ac * 10^{2m} + (ad + bc) * 10^m + bd
+//
 //       = 10^{2m}e + 10^m(g + h) + f
-//            e = ac ; f = bd ; g = bc ; h = ad
+//        where: e = ac ; f = bd ; g = bc ; h = ad
+//
+//       = term1 + term2 + f
 int split_multiply(int x, int y, int numDigits) {
   // Base case — multiply 2 single digit numbers
   // Note: We are guaranteed that numDigits is a power of 2
