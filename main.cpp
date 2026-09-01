@@ -4,9 +4,10 @@
 
 #include <stdio.h>
 #include <iostream>
+#include <cstdint>
 
-int multiply_by_ten(int input) {
-  int output;
+uint64_t multiply_by_ten(uint64_t input) {
+  uint64_t output;
   output = (input << 3); // Multiply input by eight
   output += (input << 1); // Add input times 2
 
@@ -14,15 +15,15 @@ int multiply_by_ten(int input) {
 }
 
 // Find how many digits in input
-int num_digits(int input) {
+uint64_t num_digits(uint64_t input) {
   if (input == 0) {
     return 0;
   }
 
-  int numDigits = 1;
-  int tmp = input;
+  uint64_t numDigits = 1;
+  uint64_t tmp = input;
 
-  while (tmp / 10 > 0.1) {
+  while (tmp >= 10) {
     
     tmp = tmp / 10;
     numDigits++;
@@ -32,15 +33,15 @@ int num_digits(int input) {
 }
 
 typedef struct {
-  int head;
-  int tail;
+  uint64_t head;
+  uint64_t tail;
 } Tuple;
 
 // Given a number, split it into its
 // front n/2 digits and back n/2 digits
-Tuple split_number(int input) {
+Tuple split_number(uint64_t input) {
 
-  int numDigits = num_digits(input);
+  uint64_t numDigits = num_digits(input);
   
   Tuple output;
   output.head = 0;
@@ -53,13 +54,13 @@ Tuple split_number(int input) {
 
   // pop the last n/2 digits
   // by dividing by 10
-  int tmp = input;
-  for (int i = 0; i < (numDigits / 2); i++) {
-    int addToTail = tmp % 10;
+  uint64_t tmp = input;
+  for (uint64_t i = 0; i < (numDigits / 2); i++) {
+    uint64_t addToTail = tmp % 10;
     tmp /= 10;
 
     // Multiply by 10 based on digit position
-    for (int j = 0; j < i; j++) {
+    for (uint64_t j = 0; j < i; j++) {
       addToTail = multiply_by_ten(addToTail);
     }
 
@@ -77,7 +78,7 @@ Tuple split_number(int input) {
 //        where: e = ac ; f = bd ; g = bc ; h = ad
 //
 //       = term1 + term2 + f
-int split_multiply(int x, int y, int numDigits) {
+uint64_t split_multiply(uint64_t x, uint64_t y, uint64_t numDigits) {
   // Base case — multiply 2 single digit numbers
   // Note: We are guaranteed that numDigits is a power of 2
   //       so we should never be in a situation where 0 + 2 = 2
@@ -90,29 +91,29 @@ int split_multiply(int x, int y, int numDigits) {
   left = split_number(x);
   right = split_number(y);
 
-  int a, b, c, d;
+  uint64_t a, b, c, d;
   a = left.head;
   b = left.tail;
   c = right.head;
   d = right.tail;
 
-  int halfDigits = numDigits >> 1;
+  uint64_t halfDigits = numDigits >> 1;
 
-  int e = split_multiply(a, c, halfDigits);
-  int f = split_multiply(a, d, halfDigits);
-  int g = split_multiply(b, c, halfDigits);
-  int h = split_multiply(b, d, halfDigits);
+  uint64_t e = split_multiply(a, c, halfDigits);
+  uint64_t f = split_multiply(a, d, halfDigits);
+  uint64_t g = split_multiply(b, c, halfDigits);
+  uint64_t h = split_multiply(b, d, halfDigits);
 
-  int m =  halfDigits;
-  int twoM = ( m << 1 );
+  uint64_t m =  halfDigits;
+  uint64_t twoM = ( m << 1 );
 
-  int term1 = e;
-  for (int i = 0; i < twoM; i++) {
+  uint64_t term1 = e;
+  for (uint64_t i = 0; i < twoM; i++) {
     term1 = multiply_by_ten(term1);
   }
 
-  int term2 = g + f;
-  for (int i = 0; i < m; i++){
+  uint64_t term2 = g + f;
+  for (uint64_t i = 0; i < m; i++){
     term2 = multiply_by_ten(term2);
   }
 
@@ -122,14 +123,14 @@ int split_multiply(int x, int y, int numDigits) {
 
 // x and y must have the same digit length for split_multiply's
 // constraints to hold, so we pass num_digits(x) as the length.
-void run_test(int x, int y) {
-  int actual = split_multiply(x, y, num_digits(x));
-  printf("%d\n", actual);
+void run_test(uint64_t x, uint64_t y) {
+  uint64_t actual = split_multiply(x, y, num_digits(x));
+  printf("%llu\n", actual);
 }
 
 int main(void) {
 
-  int x, y, numDigits;
+  uint64_t x, y, numDigits;
 
   std::cin >> x;
   std::cin >> y;
