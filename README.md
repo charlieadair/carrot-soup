@@ -4,10 +4,6 @@
 make run
 ./run
 ```
-```
-```
-```
-```
 
 # Assignment Description
 
