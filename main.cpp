@@ -3,6 +3,7 @@
 #include <string>
 #include <iostream>
 #include <cstdio>
+#include <algorithm>
 
 // Turns a string (expected to represent a number) into a vector of integers
 std::vector<int> vectorize(std::string input, int numDigits) {
