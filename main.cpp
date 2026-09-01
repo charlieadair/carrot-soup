@@ -130,9 +130,16 @@ int main(void) {
   std::vector<int> X = vectorize(in_x, numDigits);
   std::vector<int> Y = vectorize(in_y, numDigits);
  
-  std::string result = vector_to_string(split_multiply(X, Y, numDigits));
+  std::vector<int> result = split_multiply(X, Y, numDigits);
 
-  printf("%s\n", result.c_str());
+  int start_idx = 0;
+  while (start_idx < result.size() - 1 && result[start_idx] == 0) {
+      start_idx++;
+  }
+
+  std::vector<int> clean_result(result.begin() + start_idx, result.end());
+
+  printf("%s\n", vector_to_string(clean_result).c_str());
 
   // Debug
   // printf("Digits: %d, X: %s, Y: %s\n", numDigits, x.c_str(), y.c_str());
