@@ -130,8 +130,9 @@ void run_test(uint64_t x, uint64_t y) {
 
 int main(void) {
 
-  uint64_t x, y;
+  uint64_t x, y, numDigits;
 
+  std::cin >> numDigits;
   std::cin >> x;
   std::cin >> y;
 
