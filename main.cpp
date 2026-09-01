@@ -3,6 +3,7 @@
 //    x and y are both positive numbers of the same length.
 
 #include <stdio.h>
+#include <iostream>
 
 int multiply_by_ten(int input) {
   int output;
@@ -119,29 +120,19 @@ int split_multiply(int x, int y, int numDigits) {
 // x and y must have the same digit length for split_multiply's
 // constraints to hold, so we pass num_digits(x) as the length.
 void run_test(int x, int y) {
-  int expected = x * y;
   int actual = split_multiply(x, y, num_digits(x));
-
-  printf("Input: %d * %d\n", x, y);
-  printf("Expected output: %d\n", expected);
-  printf("Actual output: %d\n", actual);
-  printf("\n");
+  printf("%d\n", actual);
 }
 
 int main(void) {
 
-  // n = 1 (single digit, base case)
-  run_test(3, 7);
-  run_test(9, 9);
+  int x, y, numDigits;
 
-  // n = 2
-  run_test(12, 34);
-  run_test(10, 20); // tail of each operand is 0
+  std::cin >> x;
+  std::cin >> y;
+  std::cin >> numDigits;
 
-  // n = 4
-  run_test(1234, 5678);
-  run_test(1000, 2000); // head AND tail land on 0 for both operands
-  run_test(1000, 9999); // one operand's tail is 0, mixed digit sizes internally
+  run_test(x, y);
 
   return 0;
 }

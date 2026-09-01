@@ -1,4 +1,4 @@
 run:
-	gcc -Wall main.c -o run
+	g++ -Wall main.cpp -o run
 clean:
 	rm run
