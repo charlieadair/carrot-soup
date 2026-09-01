@@ -1,3 +1,14 @@
+# To run...
+
+```
+make run
+./run
+```
+```
+```
+```
+```
+
 # Assignment Description
 
 Please see Tips for programming problems for more instructions on solving programming problems.
