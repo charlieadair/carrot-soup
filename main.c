@@ -74,42 +74,46 @@ Tuple split_number(int input) {
 //       = 10^{2m}e + 10^m(g + h) + f
 //            e = ac ; f = bd ; g = bc ; h = ad
 int split_multiply(int x, int y, int numDigits) {
+  // Base case — multiply 2 single digit numbers
+  // Note: We are guaranteed that numDigits is a power of 2
+  //       so we should never be in a situation where 0 + 2 = 2
+  //       causes logic to break. In otherwords, x = y.
+  if (numDigits <= 1) {
+    return x * y;
+  }
 
-
-  numDigits_x = num_digits(x) 
-  
   Tuple left, right;
-  if (num_digits(x) > 1) {
-    left = split_number(x);
-  }
-  else {
-    left.tail = x;
-  }
-  if (num_digits(y) > 1) {
-    right = split_multiply(y);
-    split_multiple(right.head, right.tail, numDigits);
-  }
-  else {
-    right.tail = y;
+  left = split_number(x);
+  right = split_number(y);
+
+  int a, b, c, d;
+  a = left.head;
+  b = left.tail;
+  c = right.head;
+  d = right.tail;
+
+  int halfDigits = numDigits >> 1;
+
+  int e = split_multiply(a, c, halfDigits);
+  int f = split_multiply(a, d, halfDigits);
+  int g = split_multiply(b, c, halfDigits);
+  int h = split_multiply(b, d, halfDigits);
+
+  int m =  halfDigits;
+  int twoM = ( m << 1 );
+
+  int term1 = e;
+  for (int i = 0; i < twoM; i++) {
+    term1 = multiply_by_ten(term1);
   }
 
-  if (numDigits_x == 1 && numDigits_y == 1) {
-    return left.tail * right.tail
+  int term2 = g + f;
+  for (int i = 0; i < m; i++){
+    term2 = multiply_by_ten(term2);
   }
 
-  e = split_multiply(left.head, right.head, numDigits);
-  f = split_multiply(left.tail, right.tail, numDigits);
-  g = split_multiple(left.tail, right.head, numDigits);
-  h = split_multiply(left.head, right.tail, numDigits);
-  m = num_digits(x);
+  return term1 + term2 + h;
 
-  tenToThe2m = 1;
-
-  // i can't guarentee that the numDigits will be less than 10, so I don't think
-  // i'm actually able to split_multiply this number.
-  for (int i = 0; i < split_multiply(2, numDigits, 1 + num_digits(numDigits))) {
-    tenToThe2m = multiply_by_ten(tenToThe2m);
-  }
 }
 
 // x and y must have the same digit length for split_multiply's
